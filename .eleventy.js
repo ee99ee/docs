@@ -107,6 +107,18 @@ module.exports = (eleventyConfig) => {
     ${content}</div>`;
   });
 
+  eleventyConfig.addPairedShortcode("section", function (content) {
+    return `<div class="flex flex-wrap flex-nowrap-ns items-start justify-around relative mw10 mt6 bb bw1 b--smoke">${content}</div>`;
+  });
+
+  eleventyConfig.addPairedShortcode("article", function (content) {
+    return `<div class="basis-60-ns order-0">${content}</div>`;
+  });
+
+  eleventyConfig.addPairedShortcode("example", function (content) {
+    return `<div class="sticky measure mt6 mt7-l top-2 bg-snow-light ba b--smoke-light mh5 pa4 br2 nested-copy-seperator nested-code basis-40-ns order-1">${content}</div>`;
+  });
+
   eleventyConfig.setUseGitIgnore(false);
 
   return {

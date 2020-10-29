@@ -6,17 +6,26 @@ eleventyNavigation:
   key: Connection
 ---
 
+{% section %}
+
 # Connection
 
 The Channels connection is the fundamental means of communication with the service. It is a bi-directional connection and is able to receive messages as well as emit messages from the server.
 
-## Connecting to Channels
-
-When you create a new `Pusher` object you are automatically connected to Channels.
+{% endsection %}
+{% section %}
+{% example %}
 
 ```js
 var pusher = new Pusher("APP_KEY", options);
 ```
+
+{% endexample %}
+{% article %}
+
+## Connecting to Channels
+
+When you create a new `Pusher` object you are automatically connected to Channels.
 
 - `applicationKey` (String) - The application key is a string which is globally unique to your application. It can be found in the API Access section of your application within the Channels user dashboard.
 - `options` (Object) _optional_ - See Channels `options` parameter below.
@@ -152,114 +161,6 @@ The option to force TLS is available on all plans.
 var pusher = new Pusher("app_key", { forceTLS: true });
 ```
 
-### Detecting Connection Limits
+{% endarticle %}
 
-> Connection limits are currently only strictly enforced on Sandbox plans. In practical terms this means that when you hit your connection limits and you’re on a Sandbox plan then you will be limited immediately. If you’re on a paid plan then we will not hard limit you until you’ve reached 120% of your plan’s connection limits. You will receive an email if your account exceeds your connection limit. If you are on a Sandbox plan and want to avoid connection limits upgrade your account. For more information on plan limits see pricing.
-
-When connection limits are reached additional connections over the limit will be rejected. You can capture the rejection by binding to the `error` event on the `pusher.connection` object.
-
-```js
-var pusher = new Pusher("app_key");
-pusher.connection.bind("error", function (err) {
-  if (err.error.data.code === 4004) {
-    log(">>> detected limit error");
-  }
-});
-```
-
-## Disconnecting from Channels
-
-It is also possible to disconnect from Channels.
-
-```js
-pusher.disconnect();
-```
-
-> Connections automatically close when a user navigates to another web page or closes their web browser so there is no need to do this manually.
-
-## Connection States
-
-When working with our Channels client library, you can monitor the state of the connection so that you can notify users about expected behaviour.
-
-> This document refers to version 1.9.0 of our library and above. Previous versions used the following events which have now been removed: `pusher:connection_established` and `pusher:connection_failed`.
-
-There are multiple ways to use the connection state API:
-
-- Bind to individual state change events
-- Bind to all state change events
-- Query the state directly
-
-Additionally, the reconnect mechanism is now more transparent. This means that you can display messages that tell the user when the service might be connected.
-
-### Available states
-
-You can access the current state as `pusher.connection.state` and bind to a state change using `pusher.connection.bind('connected', function() {...})`
-
-| State          | Note                                                                                                                                                                                                                                                                                    |
-| :------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `initialized`  | Initial state. No event is emitted in this state.                                                                                                                                                                                                                                       |
-| `connecting`   | All dependencies have been loaded and Channels is trying to connect. The connection will also enter this state when it is trying to reconnect after a connection failure.                                                                                                               |
-| `connected`    | The connection to Channels is open and authenticated with your app.                                                                                                                                                                                                                     |
-| `unavailable`  | The connection is temporarily unavailable. In most cases this means that there is no internet connection. It could also mean that Channels is down, or some intermediary is blocking the connection. In this state, pusher-js will automatically retry the connection every 15 seconds. |
-| `failed`       | Channels is not supported by the browser. This implies that WebSockets are not natively available and an HTTP-based transport could not be found.                                                                                                                                       |
-| `disconnected` | The Channels connection was previously connected and has now intentionally been closed.                                                                                                                                                                                                 |
-
-#### Example state changes
-
-Given a supported browser and functioning internet connection, the following states are expected:
-
-`initialized -> connecting -> connected`
-
-Temporary failure of the Channels connection will cause
-
-`connected -> connecting -> connected`
-
-If an internet connection disappears
-
-`connected -> connecting -> unavailable (after ~ 30s)`
-
-When the internet connection becomes available again
-
-`unavailable -> connected`
-
-In the case that Channels is not supported:
-
-`initialized -> failed`
-
-#### Binding to connection events
-
-Each Channels instance now has a `connection` object which manages the current state of the Channels connection and allows binding to state changes:
-
-```js
-var pusher = new Pusher("_APP_KEY");
-
-pusher.connection.bind("connected", function () {
-  $("div#status").text("Realtime is go!");
-});
-```
-
-You can also bind to the `error` event, which is emitted whenever a connection error occurs:
-
-```js
-pusher.connection.bind("error", function (error) {
-  console.error("connection error", error);
-  $("div#status").text("Error!");
-});
-```
-
-#### Binding to all state changes
-
-There’s an extra `state_change` utility event that fires for all state changes:
-
-```js
-pusher.connection.bind("state_change", function (states) {
-  // states = {previous: 'oldState', current: 'newState'}
-  $("div#status").text("Channels current state is " + states.current);
-});
-```
-
-### Querying the connection state
-
-```js
-const state = pusher.connection.state;
-```
+{% endsection %}
